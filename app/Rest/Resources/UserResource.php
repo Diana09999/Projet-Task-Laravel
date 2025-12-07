@@ -2,18 +2,17 @@
 
 namespace App\Rest\Resources;
 
-use App\Models\Task;
+use App\Models\User;
 use App\Rest\Resources\Resource;
-use Lomkit\Rest\Relations\BelongsTo;
 
-class TaskResource extends Resource
+class UserResource extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
-    public static $model = Task::class;
+    public static $model = User::class;
 
     /**
      * The exposed fields that could be provided
@@ -24,11 +23,8 @@ class TaskResource extends Resource
     {
         return [
             'id',
-            'project_id',
-            'title',
-            'content',
-            'is_completed',
-            'attachment_path'
+            'name',
+            'email',
         ];
     }
 
@@ -39,13 +35,11 @@ class TaskResource extends Resource
      */
     public function relations(\Lomkit\Rest\Http\Requests\RestRequest $request): array
     {
-        return [
-            BelongsTo::make('project', ProjectResource::class)
-        ];
+        return [];
     }
 
     /**
-     * The exposed sco pes that could be provided
+     * The exposed scopes that could be provided
      * @param RestRequest $request
      * @return array
      */

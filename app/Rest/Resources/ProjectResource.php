@@ -2,10 +2,10 @@
 
 namespace App\Rest\Resources;
 
-use App\Models\Task;
+use App\Models\Project;
 use App\Rest\Resources\Resource;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Session\Store;
+use Lomkit\Rest\Relations\BelongsTo;
+use Lomkit\Rest\Relations\HasMany;
 
 class ProjectResource extends Resource
 {
@@ -14,7 +14,7 @@ class ProjectResource extends Resource
      *
      * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
-    public static $model = \App\Models\Project::class;
+    public static $model = Project::class;
 
     /**
      * The exposed fields that could be provided
@@ -25,13 +25,11 @@ class ProjectResource extends Resource
     {
         return [
             'id',
+            'user_id',
             'title',
-            'description',
-            'created_at',
-            'updated_at',
+            'description'
         ];
     }
-
     /**
      * The exposed relations that could be provided
      * @param RestRequest $request
@@ -40,7 +38,8 @@ class ProjectResource extends Resource
     public function relations(\Lomkit\Rest\Http\Requests\RestRequest $request): array
     {
         return [
-            \Lomkit\Rest\Relations\HasMany::make('tasks', Task::class),
+            BelongsTo::make('user', UserResource::class),
+           HasMany::make('tasks', TaskResource::class)
         ];
     }
 
@@ -74,13 +73,7 @@ class ProjectResource extends Resource
      * @return array
      */
     public function actions(\Lomkit\Rest\Http\Requests\RestRequest $request): array {
-        return [
-            Store::make(),
-            Update::make(),
-            Destroy::make(),
-            ForceDelete::make(),
-            Restore::make(),
-        ];
+        return [];
     }
 
     /**
@@ -90,9 +83,5 @@ class ProjectResource extends Resource
      */
     public function instructions(\Lomkit\Rest\Http\Requests\RestRequest $request): array {
         return [];
-    }
-
-    public function query(\Lomkit\Rest\Http\Requests\RestRequest $request, $query): array{
-        return $query->where('user_id', auth()->id());
     }
 }

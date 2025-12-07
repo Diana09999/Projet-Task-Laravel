@@ -8,15 +8,14 @@ use App\Notifications\NewTaskAssigned;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendTaskCreationNotification
+class SendTaskCreationNotification implements ShouldQueue
 {
+    use InteractsWithQueue;
     /**
      * Create the event listener.
      */
-    public function __construct(Task $task)
+    public function __construct()
     {
-        $this->task = $task;
-
     }
 
     /**
@@ -26,12 +25,12 @@ class SendTaskCreationNotification
     {
         $task = $event->task;
 
-        $owner = $task->project()->user; //recup propiétaire du projet
+        $task->loadMissing('project.user');
+
+        $owner = $task->project?->user;
 
         if ($owner) {
             $owner->notify(new NewTaskAssigned($task));
-        } else{
-            error('tache non notifiée');
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Lomkit\Rest\Http\Requests\RestRequest;
 
 class UpdateProjectRequest extends FormRequest
 {

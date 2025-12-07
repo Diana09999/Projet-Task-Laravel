@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewTaskAssigned extends Notification
+class NewTaskAssigned extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -38,15 +38,15 @@ class NewTaskAssigned extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $task = $this->task;
-        $project = $this->$task->project;
+        $project = $task->project;
 
         return (new MailMessage)
             ->subject("Nouvelle tâche créée : {$task->title}")
             ->greeting("Bonjour : {$notifiable->name}")
             ->line("Une nouvelle tâche a été ajouté au projet {$project->title}")
             ->line("Titre: {$task->title}")
-            ->action("Notification Action', url('/tasks/{$task->id}')")
-            ->line('Thank you for using our application!');
+            ->action('Voir la tâche', url("/tasks/{$task->id}"))
+            ->line('Merci d’utiliser lapplication');
     }
 
     /**
@@ -58,8 +58,7 @@ class NewTaskAssigned extends Notification
     {
         return [
             'task_id' => $this->task->id,
-            'title' => $this->task->title,
-            'project_id' => $this->task->project->id
+            'project_id' => $this->task->project->id ?? null,
         ];
     }
 }

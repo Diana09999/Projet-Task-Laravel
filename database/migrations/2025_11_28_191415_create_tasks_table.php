@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained('projects');
             $table->string('title');
-            $table->text("content");
+            $table->text("content")->nullable();
             $table->boolean('is_completed')->default(false);
             $table->string('attachment_path')->nullable();
             $table->timestamps();
