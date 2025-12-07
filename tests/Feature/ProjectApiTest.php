@@ -38,9 +38,16 @@ class ProjectApiTest extends TestCase
     public function guest_cannot_create_project()
     {
         $response = $this->postJson('/api/projects/mutate', [
-            'create' => [
-                'title' => 'projet interdit',
-                'description' => 'test',
+            'mutate' => [
+                'create' => [
+                    [
+                        'operation' => 'create',
+                        'attributes' => [
+                            'title' => 'projet interdit',
+                            'description' => 'test',
+                        ]
+                    ]
+                ]
             ]
         ]);
 
@@ -54,10 +61,17 @@ class ProjectApiTest extends TestCase
         Sanctum::actingAs($user);
 
         $payload = [
-            'create' => [
-                'title' => 'nouveau projet',
-                'description' => 'test',
-                'user_id' => $user->id,
+            'mutate' => [
+                'create' => [
+                    [
+                        'operation' => 'create',
+                        'attributes' => [
+                            'title' => 'nouveau projet',
+                            'description' => 'test',
+                            'user_id' => $user->id,
+                        ]
+                    ]
+                ]
             ]
         ];
 
@@ -100,16 +114,21 @@ class ProjectApiTest extends TestCase
         $project = Project::factory()->for($user)->create();
 
         $payload = [
-            'update' => [
-                [
-                    'id' => $project->id,
-                    'title' => 'titre mis a jour',
-                    'description' => 'nouvelle description',
-                ],
-            ],
+            'mutate' => [
+                'update' => [
+                    [
+                        'operation' => 'update',
+                        'key' => $project->id,
+                        'attributes' => [
+                            'title' => 'titre mis a jour',
+                            'description' => 'nouvelle description',
+                        ]
+                    ]
+                ]
+            ]
         ];
 
-        $response = $this->putJson('/api/projects/mutate', $payload);
+        $response = $this->postJson('/api/projects/mutate', $payload);
 
         $response->assertStatus(200);
 
@@ -127,11 +146,20 @@ class ProjectApiTest extends TestCase
 
         $project = Project::factory()->for($user)->create();
 
-        $response = $this->deleteJson("/api/projects", [
-            'ids' => [$project->id]
-        ]);
+        $payload = [
+            'mutate' => [
+                'delete' => [
+                    [
+                        'operation' => 'delete',
+                        'key' => $project->id
+                    ]
+                ]
+            ]
+        ];
 
-        $response->assertStatus(204);
+        $response = $this->postJson('/api/projects/mutate', $payload);
+
+        $response->assertStatus(200);
 
         $this->assertDatabaseMissing('projects', [
             'id' => $project->id,

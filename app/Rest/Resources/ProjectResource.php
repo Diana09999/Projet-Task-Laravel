@@ -3,6 +3,7 @@
 namespace App\Rest\Resources;
 
 use App\Models\Project;
+use App\Policies\ProjectPolicy;
 use App\Rest\Resources\Resource;
 use Lomkit\Rest\Relations\BelongsTo;
 use Lomkit\Rest\Relations\HasMany;
@@ -15,6 +16,7 @@ class ProjectResource extends Resource
      * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
     public static $model = Project::class;
+    public static $policy = ProjectPolicy::class;
 
     /**
      * The exposed fields that could be provided
@@ -93,4 +95,9 @@ class ProjectResource extends Resource
     public function instructions(\Lomkit\Rest\Http\Requests\RestRequest $request): array {
         return [];
     }
+
+    protected $policyAction = [
+        'search' => 'view',
+        'mutate' => 'update',
+    ];
 }
