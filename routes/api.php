@@ -15,8 +15,7 @@ use App\Rest\Resources\ProjectResource;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
-
+Route::post('/tasks/upload', [\App\Rest\Controllers\TasksController::class, 'uploadAttachment']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', function (Request $request) {
@@ -29,3 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+\Lomkit\Rest\Facades\Rest::resource('users', \App\Rest\Controllers\UsersController::class);

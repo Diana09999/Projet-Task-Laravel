@@ -27,9 +27,16 @@ class ProjectResource extends Resource
             'id',
             'user_id',
             'title',
-            'description'
+            'description',
+            'deleted_at'
         ];
     }
+
+    public function restoreQuery(\Lomkit\Rest\Http\Requests\RestRequest $request, \Illuminate\Contracts\Database\Eloquent\Builder $query)
+    {
+        return $query->withTrashed();
+    }
+
     /**
      * The exposed relations that could be provided
      * @param RestRequest $request
@@ -50,7 +57,9 @@ class ProjectResource extends Resource
      */
     public function scopes(\Lomkit\Rest\Http\Requests\RestRequest $request): array
     {
-        return [];
+        return [
+            'withTrashed'
+        ];
     }
 
     /**

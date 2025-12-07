@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\TaskCreated;
+use App\Jobs\ProcessTaskAttachments;
 use App\Models\Task;
 use App\Notifications\NewTaskAssigned;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,10 +29,11 @@ class SendTaskCreationNotification implements ShouldQueue
         $task->loadMissing('project.user');
 
         $owner = $task->project?->user;
-
         if ($owner) {
             $owner->notify(new NewTaskAssigned($task));
         }
+
+        ProcessTaskAttachments::dispatch($task);
     }
 }
 

@@ -28,7 +28,10 @@ class TaskResource extends Resource
             'title',
             'content',
             'is_completed',
-            'attachment_path'
+            'attachment_path',
+            'attachment_url' => function ($task) {
+                return $task->attachment_path ? asset('storage/' . $task->attachment_path) : null;
+            }
         ];
     }
 
@@ -73,7 +76,8 @@ class TaskResource extends Resource
      * @param RestRequest $request
      * @return array
      */
-    public function actions(\Lomkit\Rest\Http\Requests\RestRequest $request): array {
+    public function actions(\Lomkit\Rest\Http\Requests\RestRequest $request): array
+    {
         return [];
     }
 
@@ -82,7 +86,8 @@ class TaskResource extends Resource
      * @param RestRequest $request
      * @return array
      */
-    public function instructions(\Lomkit\Rest\Http\Requests\RestRequest $request): array {
+    public function instructions(\Lomkit\Rest\Http\Requests\RestRequest $request): array
+    {
         return [];
     }
 }
